@@ -734,7 +734,7 @@ public:
   virtual OptionalParseResult parseOptionalInteger(APInt &result) = 0;
   virtual OptionalParseResult parseOptionalDecimalInteger(APInt &result) = 0;
 
- private:
+private:
   template <typename IntT, typename ParseFn>
   OptionalParseResult parseOptionalIntegerAndCheck(IntT &result,
                                                    ParseFn &&parseFn) {
@@ -756,7 +756,7 @@ public:
     return success();
   }
 
- public:
+public:
   template <typename IntT>
   OptionalParseResult parseOptionalInteger(IntT &result) {
     return parseOptionalIntegerAndCheck(
@@ -1820,7 +1820,10 @@ ParseResult parseDimensionList(OpAsmParser &parser,
 //===--------------------------------------------------------------------===//
 
 /// The OpAsmOpInterface, see OpAsmInterface.td for more details.
-#include "mlir/IR/OpAsmInterface.h.inc"
+#include "mlir/IR/OpAsmAttrInterface.h.inc"
+#include "mlir/IR/OpAsmTypeInterface.h.inc"
+// put Attr/Type before Op
+#include "mlir/IR/OpAsmOpInterface.h.inc"
 
 namespace llvm {
 template <>

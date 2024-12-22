@@ -50,10 +50,20 @@ def OpAsmOpInterface : OpInterface<"OpAsmOpInterface"> {
         ```mlir
           %first_result, %middle_results:2, %0 = "my.op" ...
         ```
+
+        If the result type is an `OpAsmTypeInterface`, the name returned by
+        `getAsmName` will be used.
       }],
       "void", "getAsmResultNames",
       (ins "::mlir::OpAsmSetValueNameFn":$setNameFn),
-      "", "return;"
+      "", [{
+        // TODO: handle packing
+        for (auto result : $_op->getResults()) {
+          if (auto opAsmTypeInterface = ::mlir::dyn_cast<::mlir::OpAsmTypeInterface>(result.getType())) {
+            setNameFn(result, opAsmTypeInterface.getAsmName());
+          }
+        }
+      }]
     >,
     InterfaceMethod<[{
         Get a special name to use when printing the block arguments for a region
@@ -105,6 +115,48 @@ def OpAsmOpInterface : OpInterface<"OpAsmOpInterface"> {
       is ignored.
       }],
       "::llvm::StringRef", "getDefaultDialect", (ins), "", "return \"\";"
+    >,
+  ];
+}
+
+//===----------------------------------------------------------------------===//
+// OpAsmTypeInterface
+//===----------------------------------------------------------------------===//
+
+def OpAsmTypeInterface : TypeInterface<"OpAsmTypeInterface"> {
+  let description = [{
+    This interface provides hooks to interact with the AsmPrinter and AsmParser
+    classes.
+  }];
+  let cppNamespace = "::mlir";
+
+  let methods = [
+    InterfaceMethod<[{
+        test
+      }],
+      "::llvm::StringRef", "getAsmName",
+      (ins), ""
+    >,
+  ];
+}
+
+//===----------------------------------------------------------------------===//
+// OpAsmAttrInterface
+//===----------------------------------------------------------------------===//
+
+def OpAsmAttrInterface : AttrInterface<"OpAsmAttrInterface"> {
+  let description = [{
+    This interface provides hooks to interact with the AsmPrinter and AsmParser
+    classes.
+  }];
+  let cppNamespace = "::mlir";
+
+  let methods = [
+    InterfaceMethod<[{
+        test
+      }],
+      "::llvm::StringRef", "getAsmName",
+      (ins), ""
     >,
   ];
 }

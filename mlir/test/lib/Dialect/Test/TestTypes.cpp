@@ -531,3 +531,7 @@ void TestRecursiveAliasType::print(AsmPrinter &printer) const {
   }
   printer << ">";
 }
+
+::llvm::StringRef TestTypeOpAsmTypeInterfaceType::getAsmName() const {
+  return "op_asm_type_interface";
+}
